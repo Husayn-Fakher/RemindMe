@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
+
 }
 
 android {
@@ -86,4 +88,8 @@ dependencies {
 
     // Coroutines for background operations
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    implementation("androidx.room:room-runtime:2.5.0") // Use the latest version
+    kapt("androidx.room:room-compiler:2.5.0") // For Kotlin
+    implementation("androidx.room:room-ktx:2.5.0") // Optional: for Kotlin extensions
 }
