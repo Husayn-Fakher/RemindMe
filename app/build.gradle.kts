@@ -66,4 +66,24 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // WorkManager for background tasks
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
+
+    // Play Services for location tracking
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // Google Maps SDK to show locations on the map
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+
+    // Jetpack Compose (You already have some, adding the rest)
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.material:material:1.5.0")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+
+    // Navigation with Compose
+    implementation("androidx.navigation:navigation-compose:2.6.0")
+
+    // Coroutines for background operations
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }
