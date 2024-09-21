@@ -19,7 +19,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v2.5.0
       with:
-        java-version: '11'  # Adjust based on your project requirements
+        java-version: '17'  # Adjust based on your project requirements
         distribution: 'temurin'  # or 'zulu', depending on your preference
         
     - name: Grant execute permission to gradlew
