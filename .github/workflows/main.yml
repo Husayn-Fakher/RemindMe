@@ -17,9 +17,10 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up JDK
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v2.5.0
       with:
         java-version: '11'  # Adjust based on your project requirements
+        distribution: 'temurin'  # or 'zulu', depending on your preference
 
     - name: Build with Gradle
       run: ./gradlew build
