@@ -1,0 +1,67 @@
+package com.example.september24.data
+
+import com.example.september24.data.dao.ReminderDao
+import com.example.september24.data.model.Reminder
+import com.example.september24.domain.ReminderRepository
+import kotlinx.coroutines.runBlocking
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import java.util.Date
+
+class ReminderRepositoryTest {
+
+    private lateinit var reminderDao: ReminderDao
+    private lateinit var reminderRepository: ReminderRepository
+
+    @Before
+    fun setUp() {
+        reminderDao = mock() // Mock the ReminderDao
+        reminderRepository = ReminderRepositoryImpl(reminderDao) // Initialize the repository with the mocked DAO
+    }
+
+    @Test
+    fun `test insert reminder`() = runBlocking {
+        // Arrange
+        val reminder = Reminder(id = 1, title = "Buy groceries", date = mock(), time = "12:00 PM")
+
+        // Act
+        reminderRepository.insert(reminder)
+
+        // Assert
+        verify(reminderDao).insert(reminder)
+    }
+
+    @Test
+    fun `test delete reminder`() = runBlocking {
+        // Arrange
+        val reminder = Reminder(id = 1, title = "Buy groceries", date = mock(), time = "12:00 PM")
+
+        // Act
+        reminderRepository.delete(reminder)
+
+        // Assert
+        verify(reminderDao).delete(reminder)
+    }
+
+    @Test
+    fun `test get all reminders`(): Unit = runBlocking {
+        // Arrange
+        val reminders = listOf(
+            Reminder(id = 1, title = "Buy groceries", date = mock(), time = "12:00 PM"),
+            Reminder(id = 2, title = "Doctor appointment", date = mock(), time = "3:00 PM")
+        )
+        `when`(reminderDao.getAllReminders()).thenReturn(reminders)
+
+        // Act
+        val result = reminderRepository.getAllReminders()
+
+        // Assert
+        assert(result == reminders)
+        verify(reminderDao).getAllReminders()
+    }
+
+
+}
