@@ -16,7 +16,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.CustomTestRunner"
+
+      //  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -79,6 +81,12 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // For instrumented tests
+    testImplementation("com.google.dagger:hilt-android-testing:2.51.1")
+    kaptTest("com.google.dagger:hilt-compiler:2.50")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.51.1")
+
     // WorkManager for background tasks
     implementation("androidx.work:work-runtime-ktx:2.7.1")
 
@@ -105,4 +113,7 @@ dependencies {
 
     // Coroutines (combined, to avoid duplication)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+
+
 }
