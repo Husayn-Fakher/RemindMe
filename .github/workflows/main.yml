@@ -27,7 +27,12 @@ jobs:
       
     - name: Build with Gradle
       run: ./gradlew build
-      
+
+    - name: Run tests with Gradle
+      run: ./gradlew test
+
+  #  - name: Run instrumented tests
+ #     run: ./gradlew connectedAndroidTest
    # - name: Upload APK
   #    uses: actions/upload-artifact@v3
   #    with:
