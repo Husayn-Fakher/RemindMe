@@ -114,6 +114,11 @@ dependencies {
     // Coroutines (combined, to avoid duplication)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
+    // Jetpack Compose ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
+
+    // Hilt integration with Jetpack Compose
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 
 }

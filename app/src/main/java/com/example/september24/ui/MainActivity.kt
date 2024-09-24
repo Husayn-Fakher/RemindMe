@@ -16,6 +16,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.example.september24.ui.theme.September24Theme
 import android.Manifest
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Card
+import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.september24.data.model.Reminder
+import com.example.september24.presentation.ReminderViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,7 +46,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     //Greeting("Android")
-                    MainScreen()
+                    // Set ReminderScreen here
+                    ReminderScreen()
                 }
             }
         }
@@ -43,32 +56,9 @@ class MainActivity : ComponentActivity() {
 
 
 
-@Composable
-fun MainScreen() {
-    val context = LocalContext.current
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            // Permission is granted, proceed with location tasks
-        } else {
-            // Permission denied, handle accordingly
-        }
-    }
 
-    // Check for permission status
-    LaunchedEffect(Unit) {
-        when {
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                    PackageManager.PERMISSION_GRANTED -> {
-                // Permission is already granted
-            }
-            else -> {
-                // Request the permission
-                locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-        }
-    }}
+
+
 
 
 
