@@ -3,13 +3,14 @@ package com.example.september24.data
 import com.example.september24.data.dao.ReminderDao
 import com.example.september24.data.model.Reminder
 import com.example.september24.domain.ReminderRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import java.util.Date
 
 class ReminderRepositoryTest {
 
@@ -53,15 +54,15 @@ class ReminderRepositoryTest {
             Reminder(id = 1, title = "Buy groceries", date = mock(), time = "12:00 PM"),
             Reminder(id = 2, title = "Doctor appointment", date = mock(), time = "3:00 PM")
         )
-        `when`(reminderDao.getAllReminders()).thenReturn(reminders)
+        `when`(reminderDao.getAllReminders()).thenReturn(flow { emit(reminders) }) // Mocking Flow
 
         // Act
-        val result = reminderRepository.getAllReminders()
+        val result = reminderRepository.getAllReminders().first() // Collect the first emission
 
         // Assert
         assert(result == reminders)
+        assert(result.size == reminders.size)
+        assert(result.containsAll(reminders))
         verify(reminderDao).getAllReminders()
     }
-
-
 }

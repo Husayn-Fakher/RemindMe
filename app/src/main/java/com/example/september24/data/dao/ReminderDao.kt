@@ -5,9 +5,10 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.september24.data.model.Reminder
+import kotlinx.coroutines.flow.Flow
 
 
-    @Dao
+@Dao
     interface ReminderDao {
         @Insert
         suspend fun insert(reminder: Reminder)
@@ -16,5 +17,5 @@ import com.example.september24.data.model.Reminder
         suspend fun delete(reminder: Reminder)
 
         @Query("SELECT * FROM reminders")
-        suspend fun getAllReminders(): List<Reminder>
+        fun getAllReminders(): Flow<List<Reminder>>
     }

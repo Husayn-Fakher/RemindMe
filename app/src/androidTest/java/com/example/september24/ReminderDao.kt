@@ -5,6 +5,7 @@ import com.example.september24.data.database.AppDatabase
 import com.example.september24.data.model.Reminder
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
@@ -43,8 +44,8 @@ class ReminderDaoTest {
         val reminder = Reminder(title = "Test Reminder", date = Date(), time = "10:00 AM")
         reminderDao.insert(reminder)
 
-        // Retrieve all reminders
-        val reminders = reminderDao.getAllReminders()
+        // Retrieve all reminders as a Flow and collect the first emission
+        val reminders = reminderDao.getAllReminders().first()
 
         // Assert that the list is not empty
         assert(reminders.isNotEmpty())

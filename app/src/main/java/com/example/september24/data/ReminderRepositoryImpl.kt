@@ -3,6 +3,7 @@ package com.example.september24.data
 import com.example.september24.data.dao.ReminderDao
 import com.example.september24.data.model.Reminder
 import com.example.september24.domain.ReminderRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ReminderRepositoryImpl @Inject constructor(
@@ -16,7 +17,7 @@ class ReminderRepositoryImpl @Inject constructor(
         reminderDao.delete(reminder) // Accessing DAO function
     }
 
-    override suspend fun getAllReminders(): List<Reminder> {
+    override  fun getAllReminders(): Flow<List<Reminder>> {
         return reminderDao.getAllReminders() // Accessing DAO function
     }
 }

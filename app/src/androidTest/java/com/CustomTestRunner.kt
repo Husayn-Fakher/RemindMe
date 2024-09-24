@@ -3,7 +3,6 @@ package com
 import android.app.Application
 import android.content.Context
 import androidx.test.runner.AndroidJUnitRunner
-import com.example.september24.MyApplication
 import dagger.hilt.android.testing.HiltTestApplication
 
 class CustomTestRunner : AndroidJUnitRunner() {
