@@ -12,7 +12,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import com.example.september24.BuildConfig
+import com.example.september24.R
 import com.example.september24.data.model.Reminder
+import com.google.android.gms.maps.model.LatLng
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -25,6 +28,8 @@ fun AddReminderDialog(
     var title by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") } // Consider using a Date Picker
     var time by remember { mutableStateOf("") } // Consider using a Time Picker
+    var selectedLocation by remember { mutableStateOf<LatLng?>(null) } // For selected location
+    var showLocationPicker by remember { mutableStateOf(false) } // State to show location picker
     val context = LocalContext.current // Get the context
 
     AlertDialog(
@@ -47,6 +52,13 @@ fun AddReminderDialog(
                     onValueChange = { time = it },
                     label = { Text("Time") } // Add Time Picker for better UX
                 )
+                // Button to trigger location picker
+                Button(onClick = { showLocationPicker = true }) {
+                    Text("Select Location")
+                }
+                selectedLocation?.let {
+                    Text("Selected Location: ${it.latitude}, ${it.longitude}")
+                }
             }
         },
         confirmButton = {
@@ -60,7 +72,9 @@ fun AddReminderDialog(
 
                             onDismiss()
                         } else {
-                            Toast.makeText(context, "Invalid date format. Please use YYYY-MM-DD", Toast.LENGTH_SHORT).show()
+                            val apiKey = BuildConfig.MAPS_API_KEY
+
+                            Toast.makeText(context, "Invalid date format. Please use YYYY-MM-DD ", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -74,6 +88,17 @@ fun AddReminderDialog(
             }
         }
     )
+
+    // Show the location picker dialog if the state is true
+    if (showLocationPicker) {
+        LocationPickerDialog(
+            onDismiss = { showLocationPicker = false },
+            onLocationPicked = { location ->
+                selectedLocation = location
+                showLocationPicker = false
+            }
+        )
+    }
 }
 
 // Example function to parse a date string into a Date object

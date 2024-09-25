@@ -22,6 +22,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "MAPS_API_KEY", "\"${System.getenv("MAPS_API_KEY")}\"")
+        resValue("string", "maps_key", System.getenv("MAPS_API_KEY") ?: "")
+
     }
 
 
@@ -43,6 +47,8 @@ android {
     }
     buildFeatures {
         compose = true
+        // Enable the BuildConfig feature
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -94,7 +100,10 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
     // Google Maps SDK to show locations on the map
-    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+
+    // Google Maps Compose
+    implementation("com.google.maps.android:maps-compose:2.11.0")
 
     // Navigation with Compose
     implementation("androidx.navigation:navigation-compose:2.6.0")
@@ -119,6 +128,7 @@ dependencies {
 
     // Hilt integration with Jetpack Compose
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
 
 
 }
