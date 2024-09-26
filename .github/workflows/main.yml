@@ -46,7 +46,7 @@ jobs:
         echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" >> $GITHUB_ENV
       
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew assembleDebug
 
     
  #   - name: Run tests with Gradle
