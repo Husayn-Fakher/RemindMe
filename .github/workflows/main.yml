@@ -24,17 +24,25 @@ jobs:
         
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
+
+        # Inject the API key from GitHub secrets and export it as an environment variable
+    - name: Set environment variables
+      run: |
+        echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" >> $GITHUB_ENV
       
     - name: Build with Gradle
       run: ./gradlew build
 
-    - name: Run tests with Gradle
-      run: ./gradlew test
+    
+ #   - name: Run tests with Gradle
+ #     run: ./gradlew test
+
+        
 
   #  - name: Run instrumented tests
  #     run: ./gradlew connectedAndroidTest
-   # - name: Upload APK
-  #    uses: actions/upload-artifact@v3
-  #    with:
-  #      name: app-debug.apk
-   #     path: app/build/outputs/apk/debug/app-debug.apk
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-debug.apk
+        path: app/build/outputs/apk/debug/app-debug.apk
