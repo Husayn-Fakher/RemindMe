@@ -40,6 +40,9 @@ jobs:
     - name: Print SHA-1 Fingerprint of Keystore
       run: keytool -list -v -keystore ~/.android/debug.keystore
 
+    - name: Grant execute permission to gradlew
+      run: chmod +x ./gradlew  # Ensure gradlew is executable
+
     - name: Clean Gradle Cache
       run: ./gradlew clean
       
