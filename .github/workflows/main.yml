@@ -25,12 +25,12 @@ jobs:
         
     - name: Create .android directory
       run: mkdir -p ~/.android  # Create the .android directory if it doesn't exist
-    
-    - name: Print SHA-1 Fingerprint
-      run: keytool -list -v -keystore ~/.android/debug.keystore -storepass android
-      
+     
     - name: Create debug.keystore from secret
       run: echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 --decode > ~/.android/debug.keystore
+
+    - name: Print SHA-1 Fingerprint
+      run: keytool -list -v -keystore ~/.android/debug.keystore -storepass android
       
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
