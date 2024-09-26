@@ -1,6 +1,7 @@
 package com.example.september24.ui
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.icu.util.Calendar
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,8 @@ fun AddReminderDialog(
     var selectedLocation by remember { mutableStateOf<LatLng?>(null) } // For selected location
     var showLocationPicker by remember { mutableStateOf(false) } // State to show location picker
     var showDatePicker by remember { mutableStateOf(false) } // State to show date picker
+    var showTimePicker by remember { mutableStateOf(false) } // State to show time picker
+
     val context = LocalContext.current // Get the context
 
     AlertDialog(
@@ -50,11 +53,10 @@ fun AddReminderDialog(
                     Text(text = if (date.isEmpty()) "Select Date" else "Selected Date: $date")
                 }
 
-                TextField(
-                    value = time,
-                    onValueChange = { time = it },
-                    label = { Text("Time") } // Add Time Picker for better UX
-                )
+                // Time picker trigger button
+                Button(onClick = { showTimePicker = true }) {
+                    Text(text = if (time.isEmpty()) "Select Time" else "Selected Time: $time")
+                }
                 // Button to trigger location picker
                 Button(onClick = { showLocationPicker = true }) {
                     Text("Select Location")
@@ -114,6 +116,23 @@ fun AddReminderDialog(
             currentDate.get(Calendar.YEAR),
             currentDate.get(Calendar.MONTH),
             currentDate.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
+    // TimePicker Dialog
+    if (showTimePicker) {
+        val currentTime = Calendar.getInstance()
+        TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+                // Update time state with selected time
+                val selectedTime = String.format("%02d:%02d", hourOfDay, minute)
+                time = selectedTime
+                showTimePicker = false
+            },
+            currentTime.get(Calendar.HOUR_OF_DAY),
+            currentTime.get(Calendar.MINUTE),
+            true // Set to 'true' for 24-hour format, false for AM/PM format
         ).show()
     }
 }
