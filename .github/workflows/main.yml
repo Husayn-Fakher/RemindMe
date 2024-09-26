@@ -26,8 +26,13 @@ jobs:
     - name: Create .android directory
       run: mkdir -p ~/.android  # Create the .android directory if it doesn't exist
      
-    - name: Create debug.keystore from secret
-      run: echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 --decode > ~/.android/debug.keystore
+   # - name: Create debug.keystore from secret
+   #   run: echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 --decode > ~/.android/debug.keystore
+
+    - name: Upload debug keystore
+      run: |
+       echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 --decode > ~/.android/debug.keystore
+       chmod 600 ~/.android/debug.keystore
 
     - name: Print SHA-1 Fingerprint
       run: keytool -list -v -keystore ~/.android/debug.keystore -storepass android
