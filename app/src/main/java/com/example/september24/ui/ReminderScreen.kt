@@ -83,4 +83,6 @@ fun ReminderScreen(
 @Composable
 fun ReminderItem(reminder: Reminder) {
     Text(text = reminder.title)
+    Text(text = reminder.time)
+    Text(text = reminder.date.toString())
 }

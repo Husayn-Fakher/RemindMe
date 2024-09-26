@@ -1,5 +1,7 @@
 package com.example.september24.ui
 
+import android.app.DatePickerDialog
+import android.icu.util.Calendar
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
@@ -30,6 +32,7 @@ fun AddReminderDialog(
     var time by remember { mutableStateOf("") } // Consider using a Time Picker
     var selectedLocation by remember { mutableStateOf<LatLng?>(null) } // For selected location
     var showLocationPicker by remember { mutableStateOf(false) } // State to show location picker
+    var showDatePicker by remember { mutableStateOf(false) } // State to show date picker
     val context = LocalContext.current // Get the context
 
     AlertDialog(
@@ -42,11 +45,11 @@ fun AddReminderDialog(
                     onValueChange = { title = it },
                     label = { Text("Title") }
                 )
-                TextField(
-                    value = date,
-                    onValueChange = { date = it },
-                    label = { Text("Date") } // Add Date Picker for better UX
-                )
+                // Date picker trigger button
+                Button(onClick = { showDatePicker = true }) {
+                    Text(text = if (date.isEmpty()) "Select Date" else "Selected Date: $date")
+                }
+
                 TextField(
                     value = time,
                     onValueChange = { time = it },
@@ -69,11 +72,8 @@ fun AddReminderDialog(
                         val parsedDate = parseDate(date) // Implement parseDate function
                         if (parsedDate != null) {
                             onAddReminder(Reminder(title = title, date = parsedDate, time = time))
-
                             onDismiss()
                         } else {
-                            val apiKey = BuildConfig.MAPS_API_KEY
-
                             Toast.makeText(context, "Invalid date format. Please use YYYY-MM-DD ", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -99,7 +99,26 @@ fun AddReminderDialog(
             }
         )
     }
+
+    // DatePicker Dialog
+    if (showDatePicker) {
+        val currentDate = Calendar.getInstance()
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                // Update the date state with the selected date
+                val selectedDate = "$year-${month + 1}-$dayOfMonth"
+                date = selectedDate
+                showDatePicker = false
+            },
+            currentDate.get(Calendar.YEAR),
+            currentDate.get(Calendar.MONTH),
+            currentDate.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
 }
+
+
 
 // Example function to parse a date string into a Date object
 fun parseDate(dateString: String): Date? {
