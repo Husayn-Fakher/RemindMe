@@ -21,7 +21,10 @@ jobs:
       with:
         java-version: '17'  # Adjust based on your project requirements
         distribution: 'temurin'  # or 'zulu', depending on your preference
-        
+    
+    - name: Create debug.keystore from secret
+      run: echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 --decode > ~/.android/debug.keystore
+      
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
 
