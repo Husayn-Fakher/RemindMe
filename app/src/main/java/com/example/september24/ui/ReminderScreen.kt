@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.september24.data.model.Reminder
 import com.example.september24.presentation.ReminderViewModel
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun ReminderScreen(
@@ -82,7 +84,13 @@ fun ReminderScreen(
 
 @Composable
 fun ReminderItem(reminder: Reminder) {
-    Text(text = reminder.title)
-    Text(text = reminder.time)
-    Text(text = reminder.date.toString())
+
+    val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    val formattedDate = dateFormat.format(reminder.date)
+
+    Column {
+        Text(text = reminder.title)
+        Text(text = reminder.time)
+        Text(text = formattedDate) // Display the formatted date
+    }
 }
