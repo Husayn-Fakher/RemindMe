@@ -34,8 +34,14 @@ jobs:
        echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 --decode > ~/.android/debug.keystore
        chmod 600 ~/.android/debug.keystore
 
-    - name: Print SHA-1 Fingerprint
-      run: keytool -list -v -keystore ~/.android/debug.keystore -storepass android
+    - name: List .android directory
+      run: ls -la ~/.android
+
+    - name: Print SHA-1 Fingerprint of Keystore
+      run: keytool -list -v -keystore ~/.android/debug.keystore
+
+    - name: Clean Gradle Cache
+      run: ./gradlew clean
       
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
