@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - master
+#  workflow_dispatch:  # This allows manual triggering of the workflow
 
 jobs:
   build:
@@ -22,6 +23,29 @@ jobs:
         java-version: '17'  # Adjust based on your project requirements
         distribution: 'temurin'  # or 'zulu', depending on your preference
         
+    - name: Create .android directory
+      run: mkdir -p ~/.android  # Create the .android directory if it doesn't exist
+     
+   # - name: Create debug.keystore from secret
+   #   run: echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 --decode > ~/.android/debug.keystore
+
+    - name: Upload debug keystore
+      run: |
+       echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 --decode > ~/.android/debug.keystore
+       chmod 600 ~/.android/debug.keystore
+
+    - name: List .android directory
+      run: ls -la ~/.android
+
+    - name: Print SHA-1 Fingerprint of Keystore
+      run: keytool -list -v -keystore ~/.android/debug.keystore
+
+    - name: Grant execute permission to gradlew
+      run: chmod +x ./gradlew  # Ensure gradlew is executable
+
+    - name: Clean Gradle Cache
+      run: ./gradlew clean
+      
     - name: Grant execute permission to gradlew
       run: chmod +x ./gradlew
 
@@ -31,7 +55,7 @@ jobs:
         echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" >> $GITHUB_ENV
       
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew assembleDebug
 
     
  #   - name: Run tests with Gradle
