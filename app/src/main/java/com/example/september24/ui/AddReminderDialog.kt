@@ -66,17 +66,30 @@ fun AddReminderDialog(
                 }
             }
         },
-        confirmButton = {
+        confirmButton = onClick@{
             Button(
                 onClick = {
                     if (title.isNotBlank() && date.isNotBlank() && time.isNotBlank()) {
                         // Convert date string to Date object
                         val parsedDate = parseDate(date) // Implement parseDate function
                         if (parsedDate != null) {
-                            onAddReminder(Reminder(title = title, date = parsedDate, time = time))
+                            // Check if the selected location is available
+                            if (selectedLocation != null) {
+                                // Create a reminder with title, date, time, and location coordinates
+                                onAddReminder(Reminder(
+                                    title = title,
+                                    date = parsedDate,
+                                    time = time,
+                                    latitude = selectedLocation!!.latitude,  // Add latitude
+                                    longitude = selectedLocation!!.longitude // Add longitude
+                                ))
+                            } else {
+                                // Handle the case when location is not selected (optional)
+                                Toast.makeText(context, "Please select a location.", Toast.LENGTH_SHORT).show()
+                            }
                             onDismiss()
                         } else {
-                            Toast.makeText(context, "Invalid date format. Please use YYYY-MM-DD ", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Please select a date.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

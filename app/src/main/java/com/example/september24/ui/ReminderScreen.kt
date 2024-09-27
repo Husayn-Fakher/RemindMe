@@ -68,7 +68,6 @@ fun ReminderScreen(
         }
     }
 
-    val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
 
     if (showDialog) {
@@ -97,13 +96,18 @@ fun ReminderItem(reminder: Reminder) {
     // Access the API key from BuildConfig (from the environment variable)
     val apiKey = BuildConfig.MAPS_API_KEY
 
-    val mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=0,0&zoom=1&size=400x400&key=$apiKey"
+
+    val mapUrl = if (reminder.latitude != null && reminder.longitude != null) {
+        "https://maps.googleapis.com/maps/api/staticmap?center=${reminder.latitude},${reminder.longitude}&zoom=20&size=800x800&key=$apiKey"
+    } else {
+        "https://maps.googleapis.com/maps/api/staticmap?center=0,0&zoom=1&size=400x400&key=$apiKey"
+    }
 
     Column {
         Text(text = reminder.title)
         Text(text = reminder.time)
         Text(text = formattedDate) // Display the formatted date
-        Log.d("ReminderItem", "Map URL: $mapUrl")
+      //  Log.d("ReminderItem", "Map URL: $mapUrl")
 
         // Map preview image
         // Map preview image using AsyncImage from Coil
