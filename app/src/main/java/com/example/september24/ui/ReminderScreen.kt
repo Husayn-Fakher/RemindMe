@@ -1,5 +1,7 @@
 package com.example.september24.ui
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,9 +17,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import com.example.september24.BuildConfig
 import com.example.september24.data.model.Reminder
 import com.example.september24.presentation.ReminderViewModel
 import java.text.SimpleDateFormat
@@ -88,9 +94,26 @@ fun ReminderItem(reminder: Reminder) {
     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     val formattedDate = dateFormat.format(reminder.date)
 
+    // Access the API key from BuildConfig (from the environment variable)
+    val apiKey = BuildConfig.MAPS_API_KEY
+
+    val mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=0,0&zoom=1&size=400x400&key=$apiKey"
+
     Column {
         Text(text = reminder.title)
         Text(text = reminder.time)
         Text(text = formattedDate) // Display the formatted date
+        Log.d("ReminderItem", "Map URL: $mapUrl")
+
+        // Map preview image
+        // Map preview image using AsyncImage from Coil
+        AsyncImage(
+            model = mapUrl, // Load the map image
+            contentDescription = "Map Preview for ${reminder.title}",
+            modifier = Modifier, // Customize modifier as needed
+            contentScale = ContentScale.Crop // Optional, adjust scaling
+        )
     }
+
+
 }
