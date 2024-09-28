@@ -22,20 +22,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.september24.BuildConfig
 import com.example.september24.data.model.Reminder
 import com.example.september24.presentation.ReminderViewModel
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 
 @Composable
 fun ReminderScreen(
-    viewModel: ReminderViewModel = hiltViewModel() // Using Hilt to inject the ViewModel
+    navController: NavController, viewModel: ReminderViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
     // Permission handling
     LocationPermissionHandler(
         onPermissionGranted = {
@@ -74,18 +73,18 @@ fun ReminderScreen(
                 if (reminders.isEmpty()) {
                     Text("No reminders available")
                 } else {
+
                     LazyColumn {
                         items(reminders) { reminder ->
+                            // Format the date to a string
+                            val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                            val formattedDate = dateFormat.format(reminder.date)
                             ReminderItem(
                                 reminder = reminder,
-                                onClick = { clickedReminder ->
-                                    // Show snackbar on click
-                                    coroutineScope.launch {
-                                        snackbarHostState.showSnackbar(
-                                            message = "Clicked on ${clickedReminder.title}"
-                                        )
-                                    }
-                                }
+                                onClick = {
+                                    navController.navigate(
+                                        "reminderDetail/${reminder.title}/${reminder.time}/$formattedDate/${reminder.latitude}/${reminder.longitude}"
+                                    )                                }
                             )
                         }
                     }

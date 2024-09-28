@@ -114,7 +114,7 @@ dependencies {
     implementation("com.google.maps.android:maps-compose:2.11.0")
 
     // Navigation with Compose
-    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("androidx.navigation:navigation-compose:2.8.1")
 
     // Coroutines for background operations
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")

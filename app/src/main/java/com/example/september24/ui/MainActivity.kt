@@ -26,6 +26,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.september24.data.model.Reminder
 import com.example.september24.presentation.ReminderViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,9 +50,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //Greeting("Android")
-                    // Set ReminderScreen here
-                    ReminderScreen()
+
+                    ReminderApp()
                 }
             }
         }
@@ -56,7 +60,35 @@ class MainActivity : ComponentActivity() {
 
 
 
+@Composable
+fun ReminderApp() {
+    // Create a NavController to manage navigation
+    val navController = rememberNavController()
 
+    // Set up the NavHost with destinations
+    NavHost(navController, startDestination = "reminderScreen") {
+        composable("reminderScreen") { ReminderScreen(navController) }
+        composable(
+            "reminderDetail/{title}/{time}/{formattedDate}/{latitude}/{longitude}",
+            arguments = listOf(
+                navArgument("title") { type = NavType.StringType },
+                navArgument("time") { type = NavType.StringType },
+                navArgument("formattedDate") { type = NavType.StringType },
+                navArgument("latitude") { type = NavType.StringType },
+                navArgument("longitude") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            ReminderDetailScreen(
+                navController,
+                title = backStackEntry.arguments?.getString("title") ?: "",
+                time = backStackEntry.arguments?.getString("time") ?: "",
+                formattedDate = backStackEntry.arguments?.getString("formattedDate") ?: "",
+                latitude = backStackEntry.arguments?.getString("latitude")?.toDoubleOrNull(), // Convert to Double
+                longitude = backStackEntry.arguments?.getString("longitude")?.toDoubleOrNull() // Convert to Double
+            )
+        }
+    }
+}
 
 
 
