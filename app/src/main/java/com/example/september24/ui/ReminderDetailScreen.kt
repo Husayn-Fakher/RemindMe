@@ -1,15 +1,21 @@
 package com.example.september24.ui
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.gms.maps.model.CameraPosition
@@ -28,6 +34,8 @@ fun ReminderDetailScreen(
     latitude: Double?,
     longitude: Double?
 ) {
+    val context = LocalContext.current
+
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Title: $title", style = MaterialTheme.typography.titleLarge)
         Text(text = "Time: $time", style = MaterialTheme.typography.bodyMedium)
@@ -55,7 +63,24 @@ fun ReminderDetailScreen(
                     )
                 }
             }
-        }
-    }
 
-    }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Button to open Google Maps
+            Button(
+                onClick = {
+                    val gmmIntentUri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude($title)")
+                    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri).apply {
+                        setPackage("com.google.android.apps.maps")
+                    }
+                    // Verify that the intent can be handled (Google Maps installed)
+                    if (mapIntent.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(mapIntent)
+                    }
+                },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(text = "Open in Google Maps")
+            }
+        }
+    } }
