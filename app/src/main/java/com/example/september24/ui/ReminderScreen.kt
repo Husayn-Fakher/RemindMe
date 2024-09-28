@@ -1,13 +1,9 @@
 package com.example.september24.ui
 
-import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+
+import android.icu.text.SimpleDateFormat
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,32 +11,31 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.example.september24.BuildConfig
 import com.example.september24.data.model.Reminder
 import com.example.september24.presentation.ReminderViewModel
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.launch
 import java.util.Locale
+
 
 @Composable
 fun ReminderScreen(
     viewModel: ReminderViewModel = hiltViewModel() // Using Hilt to inject the ViewModel
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
     // Permission handling
     LocationPermissionHandler(
         onPermissionGranted = {
@@ -54,33 +49,48 @@ fun ReminderScreen(
     // Collect the state of the reminders from the ViewModel
     val reminders by viewModel.reminders.collectAsState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Main content
-        Column(
+    // Scaffold to show Snackbar
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { paddingValues ->
+
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 56.dp) // Leave space for the button
+                .padding(paddingValues)
+                .padding(16.dp)
         ) {
-            Text(
-                text = "Your Reminders",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 56.dp) // Leave space for the button
+            ) {
+                Text(
+                    text = "Your Reminders",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
 
-            if (reminders.isEmpty()) {
-                Text("No reminders available")
-            } else {
-                LazyColumn {
-                    items(reminders) { reminder ->
-                        ReminderItem(reminder)
+                if (reminders.isEmpty()) {
+                    Text("No reminders available")
+                } else {
+                    LazyColumn {
+                        items(reminders) { reminder ->
+                            ReminderItem(
+                                reminder = reminder,
+                                onClick = { clickedReminder ->
+                                    // Show snackbar on click
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = "Clicked on ${clickedReminder.title}"
+                                        )
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             }
-        }
 
         // Add Reminder Button at the bottom
         var showDialog by remember { mutableStateOf(false) }
@@ -105,9 +115,11 @@ fun ReminderScreen(
         }
     }
 }
+}
 
 @Composable
-fun ReminderItem(reminder: Reminder) {
+fun ReminderItem(reminder: Reminder,
+                 onClick: (Reminder) -> Unit){ // Add a click callback to handle the click event)
 
     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     val formattedDate = dateFormat.format(reminder.date)
@@ -123,7 +135,8 @@ fun ReminderItem(reminder: Reminder) {
         elevation = CardDefaults.cardElevation(4.dp) ,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp).clickable { onClick(reminder) } // Handle click event
+
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
