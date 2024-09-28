@@ -1,5 +1,6 @@
 package com.example.september24.ui
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.icu.util.Calendar
@@ -18,7 +19,11 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.september24.BuildConfig
 import com.example.september24.R
 import com.example.september24.data.model.Reminder
+import com.example.september24.presentation.ReminderViewModel
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -26,8 +31,10 @@ import java.util.Locale
 @Composable
 fun AddReminderDialog(
     onDismiss: () -> Unit,
-    onAddReminder: (Reminder) -> Unit
+    onAddReminder: (Reminder) -> Unit,
+    autocompleteRequestCode: Int
 ) {
+
     var title by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") } // Consider using a Date Picker
     var time by remember { mutableStateOf("") } // Consider using a Time Picker
@@ -59,7 +66,16 @@ fun AddReminderDialog(
                 }
                 // Button to trigger location picker
                 Button(onClick = { showLocationPicker = true }) {
-                    Text("Select Location")
+                    Text("Select Location from Map")
+                }
+                // Button to trigger location picker
+                Button (onClick = {
+                    val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+                    val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                        .build(context as Activity)
+                    (context as Activity).startActivityForResult(intent, autocompleteRequestCode)
+                })  {
+                    Text("Type in Address")
                 }
                 selectedLocation?.let {
                     Text("Selected Location: ${it.latitude}, ${it.longitude}")

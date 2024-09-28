@@ -27,6 +27,7 @@ import coil.compose.AsyncImage
 import com.example.september24.BuildConfig
 import com.example.september24.data.model.Reminder
 import com.example.september24.presentation.ReminderViewModel
+import com.example.september24.utils.AUTOCOMPLETE_REQUEST_CODE
 import java.util.Locale
 
 
@@ -100,7 +101,9 @@ fun ReminderScreen(
                 onAddReminder = { reminder ->
                     // Call the ViewModel's insertReminder here
                     viewModel.insertReminder(reminder)
-                }
+                },
+                autocompleteRequestCode = AUTOCOMPLETE_REQUEST_CODE // Pass the constant
+
             )
         }
 
