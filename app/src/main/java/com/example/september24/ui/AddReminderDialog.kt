@@ -3,8 +3,11 @@ package com.example.september24.ui
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.icu.util.Calendar
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -31,8 +34,7 @@ import java.util.Locale
 @Composable
 fun AddReminderDialog(
     onDismiss: () -> Unit,
-    onAddReminder: (Reminder) -> Unit,
-    autocompleteRequestCode: Int
+    onAddReminder: (Reminder) -> Unit
 ) {
 
     var title by remember { mutableStateOf("") }
@@ -44,6 +46,20 @@ fun AddReminderDialog(
     var showTimePicker by remember { mutableStateOf(false) } // State to show time picker
 
     val context = LocalContext.current // Get the context
+
+    // Launcher to get result from AutocompleteActivity
+    val autocompleteLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            if (data != null) {
+                val place = Autocomplete.getPlaceFromIntent(data)
+                selectedLocation = place.location
+                Toast.makeText(context, "Selected Location: ${place.displayName}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -68,15 +84,16 @@ fun AddReminderDialog(
                 Button(onClick = { showLocationPicker = true }) {
                     Text("Select Location from Map")
                 }
-                // Button to trigger location picker
-                Button (onClick = {
+                // Button to trigger the Autocomplete search
+                Button(onClick = {
                     val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
                     val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
-                        .build(context as Activity)
-                    (context as Activity).startActivityForResult(intent, autocompleteRequestCode)
-                })  {
+                        .build(context)
+                    autocompleteLauncher.launch(intent)
+                }) {
                     Text("Type in Address")
                 }
+
                 selectedLocation?.let {
                     Text("Selected Location: ${it.latitude}, ${it.longitude}")
                 }

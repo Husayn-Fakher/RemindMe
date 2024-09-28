@@ -101,9 +101,7 @@ fun ReminderScreen(
                 onAddReminder = { reminder ->
                     // Call the ViewModel's insertReminder here
                     viewModel.insertReminder(reminder)
-                },
-                autocompleteRequestCode = AUTOCOMPLETE_REQUEST_CODE // Pass the constant
-
+                }
             )
         }
 
