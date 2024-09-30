@@ -2,12 +2,11 @@ package com.example.september24
 
 import com.example.september24.data.dao.ReminderDao
 import com.example.september24.data.database.AppDatabase
-import com.example.september24.data.model.Reminder
+import com.example.september24.data.models.Reminder
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

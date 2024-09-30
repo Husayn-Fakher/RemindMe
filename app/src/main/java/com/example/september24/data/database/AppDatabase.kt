@@ -6,12 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.september24.data.dao.ReminderDao
-import com.example.september24.data.model.Converters
-import com.example.september24.data.model.Reminder
+import com.example.september24.data.models.Converters
+import com.example.september24.data.models.ReminderEntity
 
 
-
-    @Database(entities = [Reminder::class], version = 1)
+@Database(entities = [ReminderEntity::class], version = 1)
     @TypeConverters(Converters::class) // Add this line
     abstract class AppDatabase : RoomDatabase() {
         abstract fun reminderDao(): ReminderDao

@@ -1,4 +1,4 @@
-package com.example.september24.data.model
+package com.example.september24.data.models
 
 import androidx.room.TypeConverter
 import java.util.Date

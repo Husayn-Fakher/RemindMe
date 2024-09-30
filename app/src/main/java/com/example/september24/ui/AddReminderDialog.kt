@@ -19,10 +19,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.example.september24.BuildConfig
-import com.example.september24.R
-import com.example.september24.data.model.Reminder
-import com.example.september24.presentation.ReminderViewModel
+import com.example.september24.domain.models.Location
+import com.example.september24.domain.models.Reminder
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
@@ -109,13 +107,14 @@ fun AddReminderDialog(
                             // Check if the selected location is available
                             if (selectedLocation != null) {
                                 // Create a reminder with title, date, time, and location coordinates
-                                onAddReminder(Reminder(
+                                onAddReminder(
+                                    Reminder(
                                     title = title,
                                     date = parsedDate,
                                     time = time,
-                                    latitude = selectedLocation!!.latitude,  // Add latitude
-                                    longitude = selectedLocation!!.longitude // Add longitude
-                                ))
+                                    location = Location(selectedLocation!!.latitude,selectedLocation!!.longitude)
+                                )
+                                )
                             } else {
                                 // Handle the case when location is not selected (optional)
                                 Toast.makeText(context, "Please select a location.", Toast.LENGTH_SHORT).show()

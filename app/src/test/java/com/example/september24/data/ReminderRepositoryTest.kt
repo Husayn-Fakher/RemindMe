@@ -1,7 +1,7 @@
 package com.example.september24.data
 
 import com.example.september24.data.dao.ReminderDao
-import com.example.september24.data.model.Reminder
+import com.example.september24.data.models.Reminder
 import com.example.september24.domain.ReminderRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow

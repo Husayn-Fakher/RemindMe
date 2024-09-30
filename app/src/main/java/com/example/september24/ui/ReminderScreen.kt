@@ -25,9 +25,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.september24.BuildConfig
-import com.example.september24.data.model.Reminder
+import com.example.september24.domain.models.Reminder
 import com.example.september24.presentation.ReminderViewModel
-import com.example.september24.utils.AUTOCOMPLETE_REQUEST_CODE
 import java.util.Locale
 
 
@@ -84,7 +83,7 @@ fun ReminderScreen(
                                 reminder = reminder,
                                 onClick = {
                                     navController.navigate(
-                                        "reminderDetail/${reminder.title}/${reminder.time}/$formattedDate/${reminder.latitude}/${reminder.longitude}"
+                                        "reminderDetail/${reminder.title}/${reminder.time}/$formattedDate/${reminder.location?.latitude}/${reminder.location?.longitude}"
                                     )                                }
                             )
                         }
@@ -125,8 +124,8 @@ fun ReminderItem(reminder: Reminder,
     val formattedDate = dateFormat.format(reminder.date)
 
     val apiKey = BuildConfig.MAPS_API_KEY
-    val mapUrl = if (reminder.latitude != null && reminder.longitude != null) {
-        "https://maps.googleapis.com/maps/api/staticmap?center=${reminder.latitude},${reminder.longitude}&zoom=20&size=800x800&key=$apiKey"
+    val mapUrl = if (reminder.location != null) {
+        "https://maps.googleapis.com/maps/api/staticmap?center=${reminder.location?.latitude},${reminder.location?.longitude}&zoom=20&size=800x800&key=$apiKey"
     } else {
         "https://maps.googleapis.com/maps/api/staticmap?center=0,0&zoom=1&size=400x400&key=$apiKey"
     }
