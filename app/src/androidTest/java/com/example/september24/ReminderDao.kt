@@ -2,7 +2,8 @@ package com.example.september24
 
 import com.example.september24.data.dao.ReminderDao
 import com.example.september24.data.database.AppDatabase
-import com.example.september24.data.models.Reminder
+import com.example.september24.data.mappers.toEntityModel
+import com.example.september24.domain.models.Reminder
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.flow.first
@@ -41,7 +42,7 @@ class ReminderDaoTest {
     @Test
     fun insertAndGetReminder() = runBlocking {
         val reminder = Reminder(title = "Test Reminder", date = Date(), time = "10:00 AM")
-        reminderDao.insert(reminder)
+        reminderDao.insert(reminder.toEntityModel())
 
         // Retrieve all reminders as a Flow and collect the first emission
         val reminders = reminderDao.getAllReminders().first()

@@ -1,8 +1,9 @@
 package com.example.september24.data
 
 import com.example.september24.data.dao.ReminderDao
-import com.example.september24.data.models.Reminder
+import com.example.september24.data.mappers.toEntityModel
 import com.example.september24.domain.ReminderRepository
+import com.example.september24.domain.models.Reminder
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
@@ -32,7 +33,7 @@ class ReminderRepositoryTest {
         reminderRepository.insert(reminder)
 
         // Assert
-        verify(reminderDao).insert(reminder)
+        verify(reminderDao).insert(reminder.toEntityModel())
     }
 
     @Test
@@ -44,7 +45,7 @@ class ReminderRepositoryTest {
         reminderRepository.delete(reminder)
 
         // Assert
-        verify(reminderDao).delete(reminder)
+        verify(reminderDao).delete(reminder.toEntityModel())
     }
 
     @Test
@@ -54,7 +55,7 @@ class ReminderRepositoryTest {
             Reminder(id = 1, title = "Buy groceries", date = mock(), time = "12:00 PM"),
             Reminder(id = 2, title = "Doctor appointment", date = mock(), time = "3:00 PM")
         )
-        `when`(reminderDao.getAllReminders()).thenReturn(flow { emit(reminders) }) // Mocking Flow
+        `when`(reminderDao.getAllReminders()).thenReturn(flow { emit(reminders.map { it.toEntityModel() }) }) // Mocking Flow
 
         // Act
         val result = reminderRepository.getAllReminders().first() // Collect the first emission
