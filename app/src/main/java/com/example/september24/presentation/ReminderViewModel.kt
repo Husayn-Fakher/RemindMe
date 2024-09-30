@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.september24.domain.DeleteReminderUseCase
+import com.example.september24.domain.GetRemindersUseCase
+import com.example.september24.domain.InsertReminderUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import com.example.september24.domain.ReminderRepository
 import com.example.september24.domain.models.Reminder
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,9 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ReminderViewModel @Inject constructor(
-    private val reminderRepository: ReminderRepository
+    private val insertReminderUseCase: InsertReminderUseCase,
+    private val getRemindersUseCase: GetRemindersUseCase,
+    private val deleteReminderUseCase: DeleteReminderUseCase
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
@@ -42,42 +46,34 @@ class ReminderViewModel @Inject constructor(
     init {
         getReminders()
     }
-    private fun getReminders() {
+    // Use case to fetch all reminders
+    fun getReminders() {
         viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                reminderRepository.getAllReminders()
-                    .collect { reminderList ->
-                        _reminders.value = reminderList
-                    }
-            } catch (e: Exception) {
-                // Set the error message for fetching reminders
-                _fetchError.value = "Failed to fetch reminders: ${e.message}" } finally {
-                _isLoading.value = false
+            getRemindersUseCase().collect { reminderList ->
+                _reminders.value = reminderList
             }
         }
     }
 
     fun insertReminder(reminder: Reminder) {
         viewModelScope.launch {
-            try {
-                reminderRepository.insert(reminder)
-                _insertError.value = null // Clear previous errors if insert is successful
-            } catch (e: Exception) {
-                // Set the error message
-                _insertError.value = "Failed to insert reminder: ${e.message}"
+            viewModelScope.launch {
+                try {
+                    insertReminderUseCase(reminder) // Use the use case instead of repository directly
+                } catch (e: Exception) {
+                    // Handle errors
+                }
             }
         }
     }
 
+    // Use case to delete a reminder
     fun deleteReminder(reminder: Reminder) {
         viewModelScope.launch {
             try {
-                reminderRepository.delete(reminder)
-                _deleteError.value = null // Clear previous errors if delete is successful
+                deleteReminderUseCase(reminder)
             } catch (e: Exception) {
-                // Set the error message
-                _deleteError.value = "Failed to delete reminder: ${e.message}"
+                // Handle errors
             }
         }
     }

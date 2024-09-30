@@ -1,7 +1,6 @@
 package com.example.september24.di
 
 import android.content.Context
-import androidx.room.Room
 import com.example.september24.data.ReminderRepositoryImpl
 import com.example.september24.data.dao.ReminderDao
 import com.example.september24.data.database.AppDatabase

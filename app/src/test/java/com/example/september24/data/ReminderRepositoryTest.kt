@@ -30,7 +30,7 @@ class ReminderRepositoryTest {
         val reminder = Reminder(id = 1, title = "Buy groceries", date = mock(), time = "12:00 PM")
 
         // Act
-        reminderRepository.insert(reminder)
+        reminderRepository.insertReminder(reminder)
 
         // Assert
         verify(reminderDao).insert(reminder.toEntityModel())
@@ -42,7 +42,7 @@ class ReminderRepositoryTest {
         val reminder = Reminder(id = 1, title = "Buy groceries", date = mock(), time = "12:00 PM")
 
         // Act
-        reminderRepository.delete(reminder)
+        reminderRepository.deleteReminder(reminder)
 
         // Assert
         verify(reminderDao).delete(reminder.toEntityModel())
