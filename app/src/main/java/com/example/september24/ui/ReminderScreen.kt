@@ -96,8 +96,7 @@ fun ReminderScreen(
                             )
                         }
                     }
-                }
-            }
+                } }
 
         // Add Reminder Button at the bottom
         var showDialog by remember { mutableStateOf(false) }

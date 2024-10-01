@@ -105,7 +105,7 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.7.1")
 
     // Play Services for location tracking
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     // Google Maps SDK to show locations on the map
     implementation("com.google.android.gms:play-services-maps:19.0.0")

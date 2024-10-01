@@ -95,6 +95,7 @@ fun LocationPickerDialog(
                         selectedLocation = latLng
                     }
                 ) {
+                    Log.d("LocationPicker", "GoogleMap Composable Rendered") // Add this log
                     selectedLocation?.let {
                         Marker(
                             state = MarkerState(position = it),
