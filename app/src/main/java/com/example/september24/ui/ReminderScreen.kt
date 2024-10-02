@@ -2,6 +2,7 @@ package com.example.september24.ui
 
 
 import android.icu.text.SimpleDateFormat
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +30,8 @@ import coil.compose.AsyncImage
 import com.example.september24.BuildConfig
 import com.example.september24.domain.models.Reminder
 import com.example.september24.presentation.ReminderViewModel
+import com.google.android.gms.location.Geofence
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 
@@ -39,6 +42,8 @@ fun ReminderScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var reminderToDelete by remember { mutableStateOf<Reminder?>(null) }
+    val coroutineScope = rememberCoroutineScope() // Get the coroutine scope
+
     // Permission handling
     LocationPermissionHandler(
         onPermissionGranted = {
@@ -104,9 +109,19 @@ fun ReminderScreen(
         if (showDialog) {
             AddReminderDialog(
                 onDismiss = { showDialog = false },
-                onAddReminder = { reminder ->
-                    // Call the ViewModel's insertReminder here
-                    viewModel.insertReminder(reminder)
+                onAddReminder = { reminder,geofence ->
+                    coroutineScope.launch {
+                        // Inserting the Reminder
+                        val reminderId = viewModel.insertReminder(reminder)
+
+                        // Validate reminderId
+                        if (reminderId > 0) { // Check if the ID is valid
+                            // Inserting the Geofence
+                            viewModel.addGeofence(geofence, reminderId.toInt())
+                        } else {
+                            Log.e("Geofence", "Failed to insert reminder, reminderId is invalid")
+                        }
+                    }
                 }
             )
         }

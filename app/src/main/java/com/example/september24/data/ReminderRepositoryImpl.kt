@@ -12,8 +12,8 @@ import javax.inject.Inject
 class ReminderRepositoryImpl @Inject constructor(
     private val reminderDao: ReminderDao
 ) : ReminderRepository  {
-    override suspend fun insertReminder(reminder: Reminder) {
-        reminderDao.insert(reminder.toEntityModel())
+    override suspend fun insertReminder(reminder: Reminder): Long {
+        return reminderDao.insert(reminder.toEntityModel())
     }
 
     override suspend fun deleteReminder(reminder: Reminder) {

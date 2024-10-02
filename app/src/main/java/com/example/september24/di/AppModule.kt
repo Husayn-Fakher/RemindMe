@@ -1,9 +1,12 @@
 package com.example.september24.di
 
 import android.content.Context
+import com.example.september24.data.GeofenceRepositoryImpl
 import com.example.september24.data.ReminderRepositoryImpl
+import com.example.september24.data.dao.GeofenceDao
 import com.example.september24.data.dao.ReminderDao
 import com.example.september24.data.database.AppDatabase
+import com.example.september24.domain.GeofenceRepository
 import com.example.september24.domain.ReminderRepository
 import dagger.Module
 import dagger.Provides
@@ -30,8 +33,19 @@ object AppModule {
     }
 
     @Provides
+    fun provideGeofenceDao(appDatabase: AppDatabase): GeofenceDao {
+        return appDatabase.geofenceDao()
+    }
+
+    @Provides
     @Singleton
     fun provideReminderRepository(dao: ReminderDao): ReminderRepository {
         return ReminderRepositoryImpl(dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGeofenceRepository(dao: GeofenceDao): GeofenceRepository {
+        return GeofenceRepositoryImpl(dao)
     }
 }

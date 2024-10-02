@@ -1,9 +1,13 @@
 package com.example.september24.di
 
-import com.example.september24.domain.DeleteReminderUseCase
-import com.example.september24.domain.GetRemindersUseCase
-import com.example.september24.domain.InsertReminderUseCase
+import com.example.september24.domain.GeofenceRepository
+import com.example.september24.domain.usecases.DeleteReminderUseCase
+import com.example.september24.domain.usecases.GetRemindersUseCase
+import com.example.september24.domain.usecases.InsertReminderUseCase
 import com.example.september24.domain.ReminderRepository
+import com.example.september24.domain.usecases.AddGeofenceUseCase
+import com.example.september24.domain.usecases.DeleteGeofenceUseCase
+import com.example.september24.domain.usecases.GetGeofenceForReminderUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,5 +30,21 @@ object UseCaseModule {
     @Provides
     fun provideDeleteReminderUseCase(reminderRepository: ReminderRepository): DeleteReminderUseCase {
         return DeleteReminderUseCase(reminderRepository)
+    }
+
+    // Geofence Use Cases
+    @Provides
+    fun provideAddGeofenceUseCase(geofenceRepository: GeofenceRepository): AddGeofenceUseCase {
+        return AddGeofenceUseCase(geofenceRepository)
+    }
+
+    @Provides
+    fun provideDeleteGeofenceUseCase(geofenceRepository: GeofenceRepository): DeleteGeofenceUseCase {
+        return DeleteGeofenceUseCase(geofenceRepository)
+    }
+
+    @Provides
+    fun provideGetGeofenceForReminderUseCase(geofenceRepository: GeofenceRepository): GetGeofenceForReminderUseCase {
+        return GetGeofenceForReminderUseCase(geofenceRepository)
     }
 }

@@ -1,5 +1,6 @@
-package com.example.september24.domain
+package com.example.september24.domain.usecases
 
+import com.example.september24.domain.ReminderRepository
 import com.example.september24.domain.models.Reminder
 
 class DeleteReminderUseCase(private val reminderRepository: ReminderRepository) {

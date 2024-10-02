@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface ReminderDao {
     // Insert a ReminderEntity into the database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(reminder: ReminderEntity)
+    suspend fun insert(reminder: ReminderEntity): Long
 
     // Delete a ReminderEntity from the database
     @Delete

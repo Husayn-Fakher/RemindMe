@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -19,8 +20,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
+import com.example.september24.data.models.GeofenceEntity
 import com.example.september24.domain.models.Location
 import com.example.september24.domain.models.Reminder
+import com.google.android.gms.location.Geofence
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
@@ -29,10 +33,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+
 @Composable
 fun AddReminderDialog(
     onDismiss: () -> Unit,
-    onAddReminder: (Reminder) -> Unit
+    onAddReminder: (Reminder,Geofence) -> Unit
 ) {
 
     var title by remember { mutableStateOf("") }
@@ -64,30 +69,23 @@ fun AddReminderDialog(
         title = { Text("Add Reminder") },
         text = {
             Column {
-                TextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Title") }
-                )
-                // Date picker trigger button
+                TextField(value = title, onValueChange = { title = it }, label = { Text("Title") })
                 Button(onClick = { showDatePicker = true }) {
                     Text(text = if (date.isEmpty()) "Select Date" else "Selected Date: $date")
                 }
-
-                // Time picker trigger button
                 Button(onClick = { showTimePicker = true }) {
                     Text(text = if (time.isEmpty()) "Select Time" else "Selected Time: $time")
                 }
-                // Button to trigger location picker
                 Button(onClick = { showLocationPicker = true }) {
                     Text("Select Location from Map")
                 }
-                // Button to trigger the Autocomplete search
-                Button(onClick = {
-                    val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
-                    val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
-                        .build(context)
-                    autocompleteLauncher.launch(intent)
+                Button(onClick =
+                    {
+                        val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+                        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                            .build(context)
+                        autocompleteLauncher.launch(intent)
+
                 }) {
                     Text("Type in Address")
                 }
@@ -101,27 +99,32 @@ fun AddReminderDialog(
             Button(
                 onClick = {
                     if (title.isNotBlank() && date.isNotBlank() && time.isNotBlank()) {
-                        // Convert date string to Date object
-                        val parsedDate = parseDate(date) // Implement parseDate function
-                        if (parsedDate != null) {
-                            // Check if the selected location is available
-                            if (selectedLocation != null) {
-                                // Create a reminder with title, date, time, and location coordinates
-                                onAddReminder(
-                                    Reminder(
-                                    title = title,
-                                    date = parsedDate,
-                                    time = time,
-                                    location = Location(selectedLocation!!.latitude,selectedLocation!!.longitude)
+                        val parsedDate = parseDate(date)
+                        if (parsedDate != null && selectedLocation != null) {
+                            val reminder = Reminder(
+                                title = title,
+                                date = parsedDate,
+                                time = time,
+                                location = Location(selectedLocation!!.latitude, selectedLocation!!.longitude)
+                            )
+
+                            // Create a geofence with a radius of 10 meters
+                            val geofence = Geofence.Builder()
+                                .setRequestId(reminder.title) // Use the reminder title as the geofence ID
+                                .setCircularRegion(
+                                    selectedLocation!!.latitude,
+                                    selectedLocation!!.longitude,
+                                    10f // Geofence radius in meters
                                 )
-                                )
-                            } else {
-                                // Handle the case when location is not selected (optional)
-                                Toast.makeText(context, "Please select a location.", Toast.LENGTH_SHORT).show()
-                            }
+                                .setExpirationDuration(Geofence.NEVER_EXPIRE) // Optional: set geofence expiration
+                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+                                .build()
+
+                            onAddReminder(reminder,geofence)
+
                             onDismiss()
                         } else {
-                            Toast.makeText(context, "Please select a date.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Please complete all fields.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
