@@ -108,20 +108,23 @@ fun AddReminderDialog(
                                 location = Location(selectedLocation!!.latitude, selectedLocation!!.longitude)
                             )
 
+
+
                             // Create a geofence with a radius of 10 meters
                             val geofence = Geofence.Builder()
                                 .setRequestId(reminder.title) // Use the reminder title as the geofence ID
                                 .setCircularRegion(
                                     selectedLocation!!.latitude,
                                     selectedLocation!!.longitude,
-                                    10f // Geofence radius in meters
+                                    100f // Geofence radius in meters
                                 )
                                 .setExpirationDuration(Geofence.NEVER_EXPIRE) // Optional: set geofence expiration
-                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL)
+                                .setLoiteringDelay(1000)
                                 .build()
 
                             onAddReminder(reminder,geofence)
-
+                            
                             onDismiss()
                         } else {
                             Toast.makeText(context, "Please complete all fields.", Toast.LENGTH_SHORT).show()

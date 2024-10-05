@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -30,7 +31,6 @@ import coil.compose.AsyncImage
 import com.example.september24.BuildConfig
 import com.example.september24.domain.models.Reminder
 import com.example.september24.presentation.ReminderViewModel
-import com.google.android.gms.location.Geofence
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -44,6 +44,10 @@ fun ReminderScreen(
     var reminderToDelete by remember { mutableStateOf<Reminder?>(null) }
     val coroutineScope = rememberCoroutineScope() // Get the coroutine scope
 
+
+    // Get the context
+    val context = LocalContext.current
+
     // Permission handling
     LocationPermissionHandler(
         onPermissionGranted = {
@@ -51,6 +55,17 @@ fun ReminderScreen(
         },
         onPermissionDenied = {
             // Handle permission denial here (e.g., show a message)
+        }
+    )
+
+    NotificationPermissionHandler(
+        onPermissionGranted = {
+            // Proceed with sending notifications
+            Log.d("ReminderScreen", "Notification permission granted")
+        },
+        onPermissionDenied = {
+            // Handle notification permission denial
+            Log.d("ReminderScreen", "Notification permission denied")
         }
     )
 
@@ -116,7 +131,7 @@ fun ReminderScreen(
 
                         // Validate reminderId
                         if (reminderId > 0) { // Check if the ID is valid
-                            // Inserting the Geofence
+                            // Inserting the Geofence to the db and the geofencing Client
                             viewModel.addGeofence(geofence, reminderId.toInt())
                         } else {
                             Log.e("Geofence", "Failed to insert reminder, reminderId is invalid")
