@@ -50,8 +50,9 @@ fun ReminderApp() {
     NavHost(navController, startDestination = "reminderScreen") {
         composable("reminderScreen") { ReminderScreen(navController) }
         composable(
-            "reminderDetail/{title}/{time}/{formattedDate}/{latitude}/{longitude}",
+            "reminderDetail/{id}/{title}/{time}/{formattedDate}/{latitude}/{longitude}",
             arguments = listOf(
+                navArgument("id") { type = NavType.LongType },
                 navArgument("title") { type = NavType.StringType },
                 navArgument("time") { type = NavType.StringType },
                 navArgument("formattedDate") { type = NavType.StringType },
@@ -61,6 +62,7 @@ fun ReminderApp() {
         ) { backStackEntry ->
             ReminderDetailScreen(
                 navController,
+                id = backStackEntry.arguments?.getLong("id") ?: 0L,
                 title = backStackEntry.arguments?.getString("title") ?: "",
                 time = backStackEntry.arguments?.getString("time") ?: "",
                 formattedDate = backStackEntry.arguments?.getString("formattedDate") ?: "",

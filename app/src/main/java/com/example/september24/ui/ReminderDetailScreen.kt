@@ -34,6 +34,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 @Composable
 fun ReminderDetailScreen(
     navController: NavController,
+    id: Long,
     title: String,
     time: String,
     formattedDate: String,
@@ -92,10 +93,7 @@ fun ReminderDetailScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
-
         // TextField for writing notes
-
             TextField(
                 value = noteText,
                 onValueChange = { noteText = it },
@@ -107,8 +105,7 @@ fun ReminderDetailScreen(
         // Button to save the note
         Button(
             onClick = {
-                // Logic to save the note (e.g., saving to a database or shared preferences)
-
+                // Logic to save the note
             },
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         ) {
