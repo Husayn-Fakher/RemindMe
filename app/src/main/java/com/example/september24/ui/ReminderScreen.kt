@@ -107,7 +107,7 @@ fun ReminderScreen(
                                 reminder = reminder,
                                 onClick = {
                                     navController.navigate(
-                                        "reminderDetail/${reminder.title}/${reminder.time}/$formattedDate/${reminder.location?.latitude}/${reminder.location?.longitude}"
+                                        "reminderDetail/${reminder.id}/${reminder.title}/${reminder.time}/$formattedDate/${reminder.location?.latitude}/${reminder.location?.longitude}"
                                     )},
                                 onDelete = { reminder ->
                                     reminderToDelete = reminder
