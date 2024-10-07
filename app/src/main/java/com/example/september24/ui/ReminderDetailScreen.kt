@@ -1,6 +1,7 @@
 package com.example.september24.ui
 
 import android.content.Intent
+import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,39 +26,58 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.september24.domain.models.Reminder
+import com.example.september24.presentation.ReminderViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import java.util.Locale
 
 @Composable
 fun ReminderDetailScreen(
     navController: NavController,
     id: Long,
-    title: String,
-    time: String,
-    formattedDate: String,
-    latitude: Double?,
-    longitude: Double?
+    viewModel: ReminderViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+
+    // Collect the state of the reminders from the ViewModel
+    val reminders by viewModel.reminders.collectAsState()
+
+    val reminder = reminders.find { it.id == id }
     var noteText by remember { mutableStateOf("") }
 
+    val title = reminder?.title
+    val time = reminder?.time
+    val formattedDate = formatReminderDate(reminder)
+    val latitude = reminder?.location?.latitude
+    val longitude = reminder?.location?.longitude
+
+    var markerPosition by remember { mutableStateOf(LatLng(latitude ?: 0.0, longitude ?: 0.0)) }
+
+
+    // Create a CameraPositionState for managing camera movements
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(markerPosition, 15f)
+    }
+
+    // This effect will re-run when latitude or longitude changes, ensuring recomposition.
+    LaunchedEffect(latitude, longitude) {
+        if (latitude != null && longitude != null) {
+            markerPosition = LatLng(latitude, longitude)
+            cameraPositionState.position = CameraPosition.fromLatLngZoom(markerPosition, 15f)
+        }
+    }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Title: $title", style = MaterialTheme.typography.titleLarge)
         Text(text = "Time: $time", style = MaterialTheme.typography.bodyMedium)
         Text(text = "Date: $formattedDate", style = MaterialTheme.typography.bodyMedium)
-
-        val markerPosition = LatLng(latitude ?: 0.0, longitude ?: 0.0)
-
-        // Create a CameraPositionState for managing camera movements
-        val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(markerPosition, 15f)
-        }
 
         // Google Map
         GoogleMap(
@@ -67,7 +89,7 @@ fun ReminderDetailScreen(
             if (latitude != null && longitude != null) {
                 Marker(
                     state = MarkerState(position = markerPosition),
-                    title = title,
+                    title = reminder?.title,
                     snippet = "Reminder Date: $formattedDate"
                 )
             }
@@ -112,4 +134,10 @@ fun ReminderDetailScreen(
             Text(text = "Save Note")
         }
     }
+
 }
+fun formatReminderDate(reminder: Reminder?): String? {
+    return reminder?.date?.let { date ->
+        val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+        dateFormat.format(date)
+    }}
