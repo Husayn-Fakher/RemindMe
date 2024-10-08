@@ -6,5 +6,6 @@ data class Reminder(
     val title: String,
     val date: Date,
     val time: String,
-    val location: Location? = null
+    val location: Location? = null,
+    val textNote: String? = null
 )

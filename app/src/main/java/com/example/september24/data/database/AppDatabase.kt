@@ -28,7 +28,7 @@ import com.example.september24.data.models.ReminderEntity
                         context.applicationContext,
                         AppDatabase::class.java,
                         "reminder_database"
-                    ).build()
+                    ).addMigrations(MIGRATION_1_2).build()
                     INSTANCE = instance
                     instance
                 }

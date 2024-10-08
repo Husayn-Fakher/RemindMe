@@ -16,7 +16,8 @@ fun ReminderEntity.toDomainModel(): Reminder {
             Location(latitude, longitude)
         } else {
             null
-        }
+        },
+        textNote = textNote // Add the textNote field
     )
 }
 
@@ -27,6 +28,7 @@ fun Reminder.toEntityModel(): ReminderEntity {
         date = date,
         time = time,
         latitude = location?.latitude,
-        longitude = location?.longitude
+        longitude = location?.longitude,
+        textNote = textNote
     )
 }

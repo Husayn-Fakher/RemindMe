@@ -11,5 +11,7 @@ data class ReminderEntity(
     val date: Date,
     val time: String,
     val latitude: Double? = null,
-    val longitude: Double? = null
+    val longitude: Double? = null,
+    val textNote: String? = null
+
 )
