@@ -8,6 +8,7 @@ import com.example.september24.domain.ReminderRepository
 import com.example.september24.domain.usecases.AddGeofenceUseCase
 import com.example.september24.domain.usecases.DeleteGeofenceUseCase
 import com.example.september24.domain.usecases.GetGeofenceForReminderUseCase
+import com.example.september24.domain.usecases.UpdateReminderUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,6 +31,11 @@ object UseCaseModule {
     @Provides
     fun provideDeleteReminderUseCase(reminderRepository: ReminderRepository): DeleteReminderUseCase {
         return DeleteReminderUseCase(reminderRepository)
+    }
+
+    @Provides
+    fun provideUpdateReminderUseCase(reminderRepository: ReminderRepository): UpdateReminderUseCase {
+        return UpdateReminderUseCase(reminderRepository)
     }
 
     // Geofence Use Cases

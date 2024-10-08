@@ -50,7 +50,13 @@ fun ReminderDetailScreen(
     val reminders by viewModel.reminders.collectAsState()
 
     val reminder = reminders.find { it.id == id }
-    var noteText by remember { mutableStateOf("") }
+    var noteText by remember { mutableStateOf(reminder?.textNote ?: "") }
+
+
+    // Update noteText whenever the reminder changes
+    LaunchedEffect(reminder) {
+        noteText = reminder?.textNote ?: ""
+    }
 
     val title = reminder?.title
     val time = reminder?.time
@@ -127,14 +133,15 @@ fun ReminderDetailScreen(
         // Button to save the note
         Button(
             onClick = {
-                // Logic to save the note
+                reminder?.let {
+                    viewModel.updateReminderText(it, noteText) // Call the update function
+                }
             },
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         ) {
             Text(text = "Save Note")
         }
     }
-
 }
 fun formatReminderDate(reminder: Reminder?): String? {
     return reminder?.date?.let { date ->

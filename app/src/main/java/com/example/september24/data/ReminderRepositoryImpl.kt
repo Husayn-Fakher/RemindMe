@@ -25,4 +25,10 @@ class ReminderRepositoryImpl @Inject constructor(
             entities.map { it.toDomainModel() } // Convert each ReminderEntity to Reminder
         }
     }
+
+
+    // Update a reminder in the database
+    override suspend fun updateReminder(reminder: Reminder) {
+        reminderDao.update(reminder.toEntityModel())
+    }
 }

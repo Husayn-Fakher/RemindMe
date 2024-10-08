@@ -2,17 +2,11 @@ package com.example.september24.presentation
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.location.Location
+
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.september24.data.models.GeofenceEntity
-import com.example.september24.data.receivers.GeofenceBroadcastReceiver
 import com.example.september24.domain.usecases.DeleteReminderUseCase
 import com.example.september24.domain.usecases.GetRemindersUseCase
 import com.example.september24.domain.usecases.InsertReminderUseCase
@@ -21,14 +15,10 @@ import javax.inject.Inject
 import com.example.september24.domain.models.Reminder
 import com.example.september24.domain.usecases.AddGeofenceUseCase
 import com.example.september24.domain.usecases.DeleteGeofenceUseCase
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.example.september24.domain.usecases.UpdateReminderUseCase
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +28,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ReminderViewModel @Inject constructor(
     private val insertReminderUseCase: InsertReminderUseCase,
+    private val updateReminderUseCase: UpdateReminderUseCase,
     private val getRemindersUseCase: GetRemindersUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
     private val addGeofenceUseCase: AddGeofenceUseCase,
@@ -91,6 +82,17 @@ class ReminderViewModel @Inject constructor(
                 -1 // Return a default value to indicate failure
             }
         }.await() // Await the result of the async block
+    }
+
+    fun updateReminderText(reminder: Reminder, newText: String) {
+        viewModelScope.launch {
+            try {
+                val updatedReminder = reminder.copy(textNote = newText) // Update the textNote
+                insertReminderUseCase(updatedReminder) // Save the updated reminder
+            } catch (e: Exception) {
+                Log.e("UpdateReminderText", "Error updating reminder: ${e.message}")
+            }
+        }
     }
 
     // Use case to delete a reminder
