@@ -3,11 +3,8 @@ package com.example.september24.ui
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -95,7 +91,7 @@ fun ReminderDetailScreen(
             if (latitude != null && longitude != null) {
                 Marker(
                     state = MarkerState(position = markerPosition),
-                    title = reminder?.title,
+                    title = reminder.title,
                     snippet = "Reminder Date: $formattedDate"
                 )
             }
@@ -124,7 +120,7 @@ fun ReminderDetailScreen(
         // TextField for writing notes
             TextField(
                 value = noteText,
-                onValueChange = { noteText = it },
+                onValueChange = { newText -> noteText = newText  },
                 label = { Text(text = "Write a note") },
                 modifier = Modifier.fillMaxWidth().height(120.dp),
                 maxLines = 4,

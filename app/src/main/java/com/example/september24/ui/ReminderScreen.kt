@@ -3,15 +3,20 @@ package com.example.september24.ui
 
 import android.icu.text.SimpleDateFormat
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -22,6 +27,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -40,9 +46,10 @@ fun ReminderScreen(
     navController: NavController, viewModel: ReminderViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope() // Get the coroutine scope
     var showDeleteDialog by remember { mutableStateOf(false) }
     var reminderToDelete by remember { mutableStateOf<Reminder?>(null) }
-    val coroutineScope = rememberCoroutineScope() // Get the coroutine scope
+    var showDialog by remember { mutableStateOf(false) }
 
 
     // Get the context
@@ -72,27 +79,36 @@ fun ReminderScreen(
     // Collect the state of the reminders from the ViewModel
     val reminders by viewModel.reminders.collectAsState()
 
-    // Scaffold to show Snackbar
+
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+       // snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { showDialog = true },
+                modifier = Modifier
+                    .padding(16.dp),
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = "Add Reminder")
+            }
+        }
     ) { paddingValues ->
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
+                .background(Color(0xFFFFF8E1))
+
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 56.dp) // Leave space for the button
             ) {
-                Text(
+              /*  Text(
                     text = "Your Reminders",
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp)
-                )
+                )*/
 
                 if (reminders.isEmpty()) {
                     Text("No reminders available")
@@ -119,8 +135,6 @@ fun ReminderScreen(
                 }
             }
 
-        // Add Reminder Button at the bottom
-        var showDialog by remember { mutableStateOf(false) }
 
         if (showDialog) {
             AddReminderDialog(
@@ -162,14 +176,14 @@ fun ReminderScreen(
                 )
             }
 
-        Button(
+    /*    Button(
             onClick = { showDialog = true },
             modifier = Modifier
                 .align(Alignment.BottomCenter) // Align button at the bottom center
                 .padding(16.dp) // Optional padding for the button
         ) {
             Text("Add Reminder")
-        }
+        }*/
     }
 }
 }
